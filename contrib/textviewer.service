@@ -1,0 +1,17 @@
+[Unit]
+Description=Online textbook viewer for DIT
+Requires=nginx.service
+After=network.target nginx.service
+
+[Service]
+PIDFile=/run/textviewer/pid
+User=user
+Group=user
+WorkingDirectory=/opt/textviewer
+ExecStart=venv3/bin/gunicorn --pid /run/textviewer/pid -b unix:textviewer.socket app:app
+ExecReload=/bin/kill -s HUP $MAINPID
+ExecStop=/bin/kill -s TERM $MAINPID
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
